@@ -32,8 +32,14 @@ def pdfDownload(book_data, book_id, ua):
     createFolder(book_id)
 
     print("正在下载单页pdf中,请等待...")
-    page_pdf_list = [(file_path + "&pageno=" + str(i), book_id + "/" + str(i) + ".pdf", ua) for i in
-                     range(total_page)]
+    
+    page_pdf_list = []
+    
+    for i in range(total_page):
+        verification = createVerificationData()
+        url = f'{file_path}&pageno={i}&bookruid={book_id}&nonce={verification["nonce"]}&stime={verification["stime"]}&sign={verification["sign"]}'
+        page_pdf_list.append((url, book_id + "/" + str(i) + ".pdf", ua))
+
     pool = Pool()
     if not book_data.get("webPath"):
         pool.map(pagePdfDownload, page_pdf_list)
