@@ -51,8 +51,12 @@ def pdfDownload(book_data, book_id, ua):
     print("正在合并所有pdf中...")
     for i in range(total_page):
         temp_file_name = book_id + "/" + str(i) + ".pdf"
-        merger.append(temp_file_name)
-
+        # 打开单页PDF并读取所有页面
+        with open(temp_file_name, 'rb') as f:
+            reader = PdfReader(f)
+            # 确保添加文件的第一页
+            merger.add_page(reader.pages[0])
+    
     merger.write(pdf_name)
     merger.close()
 
@@ -64,7 +68,7 @@ def pdfDownload(book_data, book_id, ua):
     addBookMark(pdf_name, catalog)
 
     current_path = os.getcwd()
-    print("下载完毕，书籍位置：" + current_path + "\\" + pdf_name)
+    print("下载完毕，书籍位置：" + current_path + "/" + pdf_name)
 
 
 # 下载单页pdf到指定位置
